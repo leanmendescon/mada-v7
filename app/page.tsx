@@ -1,38 +1,35 @@
 'use client'
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 
 export default function Home() {
   const [prompt, setPrompt] = useState('')
-
-  const handleBuild = () => {
-    if(!prompt.trim()) return
-    localStorage.setItem('mada_last_prompt', prompt)
-    window.location.href = `/build/${Date.now()}`
+  const router = useRouter()
+  const build = () => {
+    if(!prompt) return
+    const id = Date.now().toString()
+    localStorage.setItem(`mada_${id}`, prompt)
+    router.push(`/build/${id}`)
   }
-
   return (
-    <div className="min-h-screen bg-[#0a0a0f] flex flex-col text-white" style={{background: 'radial-gradient(ellipse at top right, #2a1a4a 0%, #0a0a0f 70%)'}}>
-      <header className="p-6 flex justify-between items-center">
-        <span className="text-purple-300 tracking-widest text-sm font-mono">● MADA V7 SUPREMA</span>
-        <span className="text-xs text-zinc-500">🟢 Online • 12 camadas ativas</span>
-      </header>
-      <main className="flex-1 flex flex-col items-center justify-center -mt-20 px-4">
-        <h1 className="text-5xl md:text-7xl font-bold mb-10 text-center tracking-tight">O que vamos construir hoje?</h1>
-        <div className="w-full max-w-3xl relative">
+    <div style={{minHeight:'100vh', background:'radial-gradient(ellipse at top, #1a1040 0%, #0a0a0f 70%)', color:'white', display:'flex', alignItems:'center', justifyContent:'center', padding:'24px', fontFamily:'system-ui'}}>
+      <div style={{width:'100%', maxWidth:'700px'}}>
+        <div style={{display:'flex', alignItems:'center', gap:'8px', fontSize:'12px', opacity:0.6, marginBottom:'32px'}}>
+          <span style={{width:'8px', height:'8px', background:'#4ade80', borderRadius:'50%', display:'inline-block'}}></span>
+          MADA V7 SUPREMA • Online • 12 camadas ativas
+        </div>
+        <h1 style={{fontSize:'48px', fontWeight:800, marginBottom:'32px', lineHeight:1.1}}>O que vamos<br/>construir hoje?</h1>
+        <div style={{display:'flex', gap:'12px'}}>
           <textarea
             value={prompt}
-            onChange={(e) => setPrompt(e.target.value)}
-            placeholder="Descreva seu app, site, clone do Facebook, Instagram, mapa 3D..."
-            className="w-full h-36 bg-[#15151f]/80 border border-purple-500/30 rounded-[20px] p-6 text-lg placeholder:text-zinc-500 outline-none focus:border-purple-500 shadow-[0_0_40px_rgba(168,85,247,0.15)] resize-none"
+            onChange={e=>setPrompt(e.target.value)}
+            placeholder="Descreva seu app, site, clone do..."
+            style={{flex:1, background:'rgba(255,255,255,0.08)', border:'1px solid rgba(255,255,255,0.15)', borderRadius:'16px', padding:'16px', color:'white', outline:'none', minHeight:'56px', resize:'none'}}
           />
-          <button
-            onClick={handleBuild}
-            className="absolute bottom-4 right-4 bg-white text-black px-6 py-2 rounded-xl font-bold hover:bg-zinc-200 transition">
-            Construir →
-          </button>
+          <button onClick={build} style={{background:'white', color:'black', padding:'0 32px', borderRadius:'16px', fontWeight:800, height:'56px', border:'none', cursor:'pointer'}}>Construir →</button>
         </div>
-        <p className="mt-8 text-sm text-zinc-500">MADA está pronta • 12 camadas ativas • auto-aprendendo</p>
-      </main>
+        <div style={{marginTop:'16px', fontSize:'12px', opacity:0.4}}>MADA está pronta • 12 camadas • auto-entendendo</div>
+      </div>
     </div>
   )
 }
