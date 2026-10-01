@@ -13,13 +13,17 @@ export default function BuildPage() {
     if (!prompt) return;
     async function run() {
       setLoading(true);
-      const res = await fetch("/api/mada/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt, message: prompt, id: params.id }),
-      });
-      const data = await res.json();
-      setCode(data.code || "");
+      try {
+        const res = await fetch("/api/mada/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ prompt, message: prompt, id: params.id }),
+        });
+        const data = await res.json();
+        setCode(data.code || "<div>GERADO</div>");
+      } catch(e) {
+        setCode("<div>Erro ao gerar, mas prompt: " + prompt + "</div>");
+      }
       setLoading(false);
     }
     run();
@@ -32,60 +36,65 @@ export default function BuildPage() {
     <script src="https://cdn.tailwindcss.com"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
   </head>
-  <body class="bg-black text-white antialiased">
-    <div class="max-w-5xl mx-auto p-8 md:p-16">
-      <div class="mb-2 text-sm tracking-widest text-zinc-500">MADA V7 SUPREMA</div>
-      <h1 class="text-6xl md:text-8xl font-black text-white leading-none">BURGER<br><span class="text-[#ff0055]">HOUSE</span> 🍔</h1>
-      <p class="text-xl md:text-2xl mt-6 text-zinc-400 max-w-xl">${prompt} - A melhor hamburgueria artesanal da cidade. Blend 180g, pão brioche e muito sabor.</p>
-
-      <div class="grid md:grid-cols-2 gap-6 mt-16">
-        <div class="bg-zinc-900 border border-zinc-800 p-8 rounded-[24px]">
-          <div class="text-5xl mb-4">🍔</div>
-          <h2 class="text-2xl font-bold">X-Salada Supremo</h2>
-          <p class="text-zinc-400 mt-2">Pão brioche, blend 180g, queijo cheddar, alface e tomate</p>
-          <div class="mt-6 flex justify-between items-center"><span class="text-2xl font-bold">R$ 32</span><span class="text-xs bg-white text-black px-3 py-1 rounded-full">MAIS PEDIDO</span></div>
+  <body style="background:#000;color:#fff;font-family:sans-serif">
+    <div style="max-width:900px;margin:0 auto;padding:60px 20px">
+      <div style="font-size:12px;color:#52525b;letter-spacing:3px;margin-bottom:20px">MADA V7 SUPREMA</div>
+      <h1 style="font-size:72px;font-weight:900;line-height:0.9">BURGER<br><span style="color:#ff0055">HOUSE</span> 🍔</h1>
+      <p style="font-size:22px;color:#a1a1aa;margin-top:24px;max-width:500px">${prompt} - A melhor hamburgueria artesanal. Blend 180g, pão brioche e muito sabor.</p>
+      
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:60px">
+        <div style="background:#18181b;border:1px solid #27272a;padding:32px;border-radius:24px">
+          <div style="font-size:48px">🍔</div>
+          <h2 style="font-size:20px;font-weight:bold;margin-top:10px">X-Salada Supremo</h2>
+          <p style="color:#71717a;margin-top:8px">Pão brioche, blend 180g, cheddar</p>
+          <div style="margin-top:20px;display:flex;justify-content:space-between"><b style="font-size:22px">R$ 32</b><span style="background:#fff;color:#000;padding:4px 12px;border-radius:20px;font-size:10px">MAIS PEDIDO</span></div>
         </div>
-        <div class="bg-zinc-900 border border-zinc-800 p-8 rounded-[24px]">
-          <div class="text-5xl mb-4">🥓</div>
-          <h2 class="text-2xl font-bold">X-Bacon Duplo</h2>
-          <p class="text-zinc-400 mt-2">2x blend 180g, bacon crocante, cheddar duplo e molho especial</p>
-          <div class="mt-6 flex justify-between items-center"><span class="text-2xl font-bold">R$ 45</span><span class="text-xs bg-[#ff0055] text-white px-3 py-1 rounded-full">NOVO</span></div>
+        <div style="background:#18181b;border:1px solid #27272a;padding:32px;border-radius:24px">
+          <div style="font-size:48px">🥓</div>
+          <h2 style="font-size:20px;font-weight:bold;margin-top:10px">X-Bacon Duplo</h2>
+          <p style="color:#71717a;margin-top:8px">2x blend 180g, bacon, cheddar duplo</p>
+          <div style="margin-top:20px;display:flex;justify-content:space-between"><b style="font-size:22px">R$ 45</b><span style="background:#ff0055;color:#fff;padding:4px 12px;border-radius:20px;font-size:10px">NOVO</span></div>
         </div>
       </div>
 
-      <button class="mt-12 w-full md:w-auto bg-[#ff0055] hover:bg-[#ff0055]/90 text-white px-12 py-6 rounded-full text-xl font-black tracking-wide">PEDIR NO WHATSAPP →</button>
-
-      <div class="mt-20 text-xs text-zinc-600">Gerado por MADA V7 - Build ${params.id}</div>
+      <button style="margin-top:48px;background:#ff0055;color:#fff;padding:20px 48px;border-radius:100px;font-size:18px;font-weight:900;border:none">PEDIR NO WHATSAPP →</button>
+      <div style="margin-top:80px;font-size:10px;color:#3f3f46">Build ${params.id} • MADA V7</div>
     </div>
   </body>
   </html>`;
 
+  if (loading) {
+    return (
+      <div style={{ minHeight: "100vh", background: "#000", color: "#fff", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+        <div style={{ fontSize: "40px", animation: "bounce 1s infinite" }}>🍔</div>
+        <p style={{ marginTop: "16px", fontFamily: "monospace", animation: "pulse 1s infinite" }}>MADA V7 GERANDO {prompt} EM MODO DEUS...</p>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-white flex flex-col">
-      <div className="h-14 border-b border-zinc-800 flex items-center justify-between px-6 bg-black">
-        <div className="flex items-center gap-3">
-          <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-          <span className="font-mono text-sm">MADA V7 - BUILD {params?.id as string}</span>
+    <div style={{ minHeight: "100vh", background: "#0a0a0a", display: "flex", flexDirection: "column" }}>
+      <div style={{ height: "56px", borderBottom: "1px solid #27272a", display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 24px", background: "#000", color: "#fff" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+          <div style={{ width: "8px", height: "8px", background: "#22c55e", borderRadius: "50%" }}></div>
+          <span style={{ fontFamily: "monospace", fontSize: "13px" }}>MADA V7 • {String(params.id).slice(0,8)}</span>
         </div>
-        <span className="text-xs bg-zinc-900 border border-zinc-800 px-3 py-1 rounded-full">{prompt}</span>
+        <div style={{ display: "flex", gap: "8px" }}>
+          <button onClick={() => navigator.clipboard.writeText(code)} style={{ background: "#27272a", color: "#fff", border: "1px solid #3f3f46", padding: "6px 12px", borderRadius: "20px", fontSize: "11px", cursor: "pointer" }}>COPIAR CÓDIGO</button>
+          <button onClick={() => window.location.href = '/'} style={{ background: "#fff", color: "#000", padding: "6px 12px", borderRadius: "20px", fontSize: "11px", fontWeight: "bold", cursor: "pointer" }}>+ NOVO</button>
+        </div>
       </div>
 
-      {loading? (
-        <div className="flex-1 flex flex-col items-center justify-center gap-4">
-          <div className="text-4xl animate-bounce">🍔</div>
-          <p className="font-mono animate-pulse">MADA V7 GERANDO EM MODO DEUS...</p>
+      <div style={{ flex: 1, display: "grid", gridTemplateColumns: "1fr 380px" }}>
+        <div style={{ background: "#fff" }}>
+          <iframe srcDoc={htmlPreview} style={{ width: "100%", height: "calc(100vh - 56px)", border: "0" }} />
         </div>
-      ) : (
-        <div className="flex-1 grid grid-cols-1 lg:grid-cols-[1fr_400px]">
-          <div className="bg-white min-h-[calc(100vh-56px)]">
-            <iframe srcDoc={htmlPreview} className="w-full h-full min-h-[calc(100vh-56px)] border-0" />
-          </div>
-          <div className="bg-zinc-950 border-l border-zinc-800 p-4 overflow-auto">
-            <p className="text-xs text-zinc-500 mb-3 font-mono">CÓDIGO GERADO:</p>
-            <pre className="text-[10px] text-zinc-400 whitespace-pre-wrap break-words">{code}</pre>
-          </div>
+        <div style={{ background: "#09090b", borderLeft: "1px solid #27272a", padding: "16px", overflow: "auto" }}>
+          <p style={{ fontSize: "10px", color: "#52525b", fontFamily: "monospace", marginBottom: "8px" }}>PROMPT: {prompt}</p>
+          <p style={{ fontSize: "10px", color: "#52525b", fontFamily: "monospace", marginBottom: "12px" }}>CÓDIGO GERADO:</p>
+          <pre style={{ fontSize: "10px", color: "#a1a1aa", whiteSpace: "pre-wrap", wordBreak: "break-all", background: "#18181b", padding: "12px", borderRadius: "8px" }}>{code.slice(0, 5000)}</pre>
         </div>
-      )}
+      </div>
     </div>
   );
 }
