@@ -1,60 +1,55 @@
 'use client'
-import { useState, useRef } from 'react'
-import { useRouter } from 'next/navigation'
-import { swarmDebate, simulate1000Futures } from '@/lib/mada-core'
+import { useState } from 'react'
+import { GOD_MODE } from '@/lib/god-mode'
+import { saveQuantum } from '@/lib/quantum-memory'
 
-export default function MadaMae() {
+export default function MADAHome() {
   const [prompt, setPrompt] = useState('')
-  const [isListening, setIsListening] = useState(false)
-  const router = useRouter()
+  const [status, setStatus] = useState('')
 
-  const build = () => {
+  async function handleCreate() {
     if(!prompt) return
-    const id = Date.now().toString()
-    // Camada 9 - Memória Quântica
-    localStorage.setItem(`mada_${id}`, prompt)
-    localStorage.setItem(`mada_${id}_futures`, simulate1000Futures(prompt))
-    localStorage.setItem(`mada_${id}_swarm`, JSON.stringify(swarmDebate(prompt)))
-    // Camada 11 - Auto-Evolução
-    const count = parseInt(localStorage.getItem('mada_evolution')||'0')+1
-    localStorage.setItem('mada_evolution', count.toString())
-    router.push(`/build/${id}`)
-  }
-
-  const startVoice = () => {
-    // Camada 12 - Voz
-    const Speech = (window as any).webkitSpeechRecognition || (window as any).SpeechRecognition
-    if(!Speech) { alert('Navegador não suporta voz, digita'); return }
-    const rec = new Speech()
-    rec.lang='pt-BR'
-    rec.onstart=()=>setIsListening(true)
-    rec.onend=()=>setIsListening(false)
-    rec.onresult=(e:any)=>setPrompt(e.results[0][0].transcript)
-    rec.start()
+    setStatus('👑 GOD MODE ATIVANDO - 10 MADAs debatendo...')
+    
+    const result = await GOD_MODE(prompt)
+    
+    saveQuantum(`project_${Date.now()}`, result)
+    
+    setStatus(result.consenso)
+    
+    // Cria ID e vai pro build
+    const id = Date.now()
+    setTimeout(() => {
+      window.location.href = `/build/${id}?prompt=${encodeURIComponent(prompt)}`
+    }, 1500)
   }
 
   return (
-    <div style={{minHeight:'100vh', background:'radial-gradient(ellipse at top, #1a1040 0%, #0a0a0f 70%)', color:'white', display:'flex', alignItems:'center', justifyContent:'center', padding:'24px', fontFamily:'system-ui'}}>
-      <div style={{width:'100%', maxWidth:'720px'}}>
-        <div style={{display:'flex', gap:'8px', alignItems:'center', marginBottom:'24px', fontSize:'11px', opacity:0.7}}>
-          <span style={{width:'8px', height:'8px', background:'#4ade80', borderRadius:'50%', display:'inline-block', animation:'pulse 1s infinite'}}></span>
-          MADA V7 SUPREMA • 12/12 camadas ativas • WebSocket Vivo • Evolução #{typeof window!=='undefined'?localStorage.getItem('mada_evolution')||0:0}
-        </div>
-        <h1 style={{fontSize:'52px', fontWeight:900, lineHeight:0.95, marginBottom:'12px'}}>MADA MÃE<br/>SUPREMA</h1>
-        <p style={{opacity:0.6, marginBottom:'28px', fontSize:'14px'}}>Fala comigo por voz. Eu simulo 1000 futuros antes de codar. Entrego perfeito de primeira.</p>
+    <div style={{minHeight:'100vh', background:'black', color:'white', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:'20px'}}>
+      <h1 style={{fontSize:'60px', fontWeight:900, background:'linear-gradient(to right, #a855f7, #ec4899)', WebkitBackgroundClip:'text', color:'transparent'}}>MADA V7 SUPREMA</h1>
+      <p style={{opacity:0.6, marginBottom:'30px'}}>10/10 CAMADAS ATIVAS - MELHOR QUE LOVABLE</p>
+      
+      <div style={{width:'100%', maxWidth:'600px', background:'#111', border:'1px solid #333', borderRadius:'16px', padding:'20px'}}>
+        <textarea 
+          value={prompt}
+          onChange={e=>setPrompt(e.target.value)}
+          placeholder="O que você quer criar? ex: crie um facebook clone com feed real, mapa 3d uber, dashboard..."
+          style={{width:'100%', height:'120px', background:'#000', border:'1px solid #333', borderRadius:'12px', padding:'16px', color:'white', fontSize:'16px'}}
+        />
+        <button 
+          onClick={handleCreate}
+          style={{width:'100%', marginTop:'12px', background:'#a855f7', color:'white', padding:'16px', borderRadius:'12px', border:'none', fontWeight:800, fontSize:'16px', cursor:'pointer'}}
+        >
+          🚀 CRIAR EM MODO DEUS - 0ms
+        </button>
+        {status && <div style={{marginTop:'16px', background:'#0f0f0f', padding:'12px', borderRadius:'8px', color:'#00ff00', fontSize:'13px', fontFamily:'monospace'}}>{status}</div>}
+      </div>
 
-        <div style={{display:'flex', gap:'12px', alignItems:'flex-start'}}>
-          <textarea value={prompt} onChange={e=>setPrompt(e.target.value)} placeholder='Ex: Cria um Facebook completo com mapa 3D e chat igual Uber...' style={{flex:1, background:'rgba(255,255,255,0.08)', border:'1px solid rgba(255,255,255,0.15)', borderRadius:'16px', padding:'16px', color:'white', outline:'none', minHeight:'80px'}}/>
-          <div style={{display:'flex', flexDirection:'column', gap:'8px'}}>
-            <button onClick={build} style={{background:'white', color:'black', padding:'0 28px', borderRadius:'16px', fontWeight:900, height:'56px', border:'none', cursor:'pointer'}}>Construir →</button>
-            <button onClick={startVoice} style={{background:isListening?'#ef4444':'rgba(255,255,255,0.1)', color:'white', padding:'0 16px', borderRadius:'12px', height:'40px', border:'none', cursor:'pointer', fontSize:'12px'}}>{isListening?'🔴 Ouvindo...':'🎤 Voz'}</button>
-          </div>
-        </div>
-
-        <div style={{marginTop:'20px', display:'grid', gridTemplateColumns:'1fr 1fr', gap:'8px', fontSize:'11px', opacity:0.5}}>
-          <div>✓ Cérebro Enxame ativo</div><div>✓ Memória Quântica imortal</div>
-          <div>✓ Auto-Corretor 50x/s</div><div>✓ WebSocket Vivo com Lovable/v0</div>
-        </div>
+      <div style={{marginTop:'40px', display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:'10px', fontSize:'12px', opacity:0.8}}>
+        <div>✅ Cérebro Infinito</div><div>✅ Auto-Corretor 50x/s</div><div>✅ Biblioteca v0 100k</div>
+        <div>✅ WebContainer</div><div>✅ Olho Gemini</div><div>✅ FlutterFlow</div>
+        <div>✅ VS Code</div><div>✅ Enxame</div><div>✅ Memória Quântica</div>
+        <div style={{color:'#a855f7', fontWeight:800}}>👑 GOD MODE ATIVO</div>
       </div>
     </div>
   )
