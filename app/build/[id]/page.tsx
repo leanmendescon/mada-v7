@@ -6,27 +6,36 @@ export default function BuildPage() {
   const params = useParams();
   const searchParams = useSearchParams();
   const prompt = searchParams.get("prompt") || "";
-  const [code, setCode] = useState("MADA V7 GERANDO EM MODO DEUS...");
+  const [code, setCode] = useState("MADA V7 GERANDO EM MODO DEUS... Aguarde");
 
   useEffect(() => {
-    if (!prompt) return;
+    if (!prompt) {
+      setCode("Sem prompt. Volte na home e digite algo.");
+      return;
+    }
     async function run() {
-      const res = await fetch("/api/mada/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt, id: params.id }),
-      });
-      const data = await res.json();
-      setCode(data.code || JSON.stringify(data));
+      try {
+        const res = await fetch("/api/mada/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ prompt, id: params.id }),
+        });
+        const data = await res.text();
+        setCode(data);
+      } catch (e: any) {
+        setCode("ERRO: " + e.message);
+      }
     }
     run();
   }, [prompt, params.id]);
 
   return (
-    <div className="bg-black text-white min-h-screen p-8">
-      <h1 className="text-pink-500 text-3xl font-bold">MADA V7 SUPREMA - BUILD {params.id as string}</h1>
-      <p className="mt-4 text-sm opacity-70">Prompt: {prompt}</p>
-      <pre className="mt-8 whitespace-pre-wrap bg-zinc-900 p-4 rounded">{code}</pre>
+    <div style={{ background: "#000", color: "#fff", minHeight: "100vh", padding: "20px" }}>
+      <h1 style={{ color: "#ff00ff" }}>MADA V7 SUPREMA - BUILD {params?.id as string}</h1>
+      <p style={{ opacity: 0.6, fontSize: "12px", marginTop: "10px" }}>Prompt: {prompt}</p>
+      <div style={{ marginTop: "20px", background: "#111", padding: "20px", borderRadius: "10px", border: "1px solid #333", whiteSpace: "pre-wrap" }}>
+        {code}
+      </div>
     </div>
   );
 }
