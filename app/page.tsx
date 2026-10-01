@@ -4,6 +4,12 @@ import { useState } from 'react'
 export default function Home() {
   const [prompt, setPrompt] = useState('')
 
+  const handleBuild = () => {
+    if(!prompt.trim()) return
+    localStorage.setItem('mada_last_prompt', prompt)
+    window.location.href = `/build/${Date.now()}`
+  }
+
   return (
     <div className="min-h-screen bg-[#0a0a0f] flex flex-col text-white" style={{background: 'radial-gradient(ellipse at top right, #2a1a4a 0%, #0a0a0f 70%)'}}>
       <header className="p-6 flex justify-between items-center">
@@ -19,7 +25,9 @@ export default function Home() {
             placeholder="Descreva seu app, site, clone do Facebook, Instagram, mapa 3D..."
             className="w-full h-36 bg-[#15151f]/80 border border-purple-500/30 rounded-[20px] p-6 text-lg placeholder:text-zinc-500 outline-none focus:border-purple-500 shadow-[0_0_40px_rgba(168,85,247,0.15)] resize-none"
           />
-          <button className="absolute bottom-4 right-4 bg-white text-black px-6 py-2 rounded-xl font-bold hover:bg-zinc-200 transition">
+          <button
+            onClick={handleBuild}
+            className="absolute bottom-4 right-4 bg-white text-black px-6 py-2 rounded-xl font-bold hover:bg-zinc-200 transition">
             Construir →
           </button>
         </div>
