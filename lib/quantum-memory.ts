@@ -1,6 +1,8 @@
 export async function saveQuantum(data: any) {
-  console.log('Salvando quantum:', data)
   return true
+}
+export async function loadQuantum(id: string) {
+  return null
 }
 export async function getQuantum(id: string) {
   return null
