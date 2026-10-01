@@ -1,56 +1,55 @@
-'use client'
-import { useState } from 'react'
-import { GOD_MODE } from '@/lib/god-mode'
-import { saveQuantum } from '@/lib/quantum-memory'
+"use client";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function MADAHome() {
-  const [prompt, setPrompt] = useState('')
-  const [status, setStatus] = useState('')
+  const [prompt, setPrompt] = useState("");
+  const [status, setStatus] = useState("");
+
+  const router = useRouter();
 
   async function handleCreate() {
-    if(!prompt) return
-    setStatus('👑 GOD MODE ATIVANDO - 10 MADAs debatendo...')
-    
-    const result = await GOD_MODE(prompt)
-    
-    saveQuantum(`project_${Date.now()}`, result)
-    
-    setStatus(result.consenso)
-    
-    // Cria ID e vai pro build
-    const id = Date.now()
-    setTimeout(() => {
-      window.location.href = `/build/${id}?prompt=${encodeURIComponent(prompt)}`
-    }, 1500)
+    if (!prompt) return;
+    setStatus("👑 GOD MODE ATIVANDO - 10 MADAs debatendo...");
+    const id = Date.now().toString();
+    // Vai direto pro build que já tá funcionando
+    router.push(`/build/${id}?prompt=${encodeURIComponent(prompt)}`);
   }
 
   return (
-    <div style={{minHeight:'100vh', background:'black', color:'white', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:'20px'}}>
-      <h1 style={{fontSize:'60px', fontWeight:900, background:'linear-gradient(to right, #a855f7, #ec4899)', WebkitBackgroundClip:'text', color:'transparent'}}>MADA V7 SUPREMA</h1>
-      <p style={{opacity:0.6, marginBottom:'30px'}}>10/10 CAMADAS ATIVAS - MELHOR QUE LOVABLE</p>
-      
-      <div style={{width:'100%', maxWidth:'600px', background:'#111', border:'1px solid #333', borderRadius:'16px', padding:'20px'}}>
-        <textarea 
-          value={prompt}
-          onChange={e=>setPrompt(e.target.value)}
-          placeholder="O que você quer criar? ex: crie um facebook clone com feed real, mapa 3d uber, dashboard..."
-          style={{width:'100%', height:'120px', background:'#000', border:'1px solid #333', borderRadius:'12px', padding:'16px', color:'white', fontSize:'16px'}}
-        />
-        <button 
-          onClick={handleCreate}
-          style={{width:'100%', marginTop:'12px', background:'#a855f7', color:'white', padding:'16px', borderRadius:'12px', border:'none', fontWeight:800, fontSize:'16px', cursor:'pointer'}}
-        >
-          🚀 CRIAR EM MODO DEUS - 0ms
-        </button>
-        {status && <div style={{marginTop:'16px', background:'#0f0f0f', padding:'12px', borderRadius:'8px', color:'#00ff00', fontSize:'13px', fontFamily:'monospace'}}>{status}</div>}
-      </div>
+    <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center p-6">
+      <h1 className="text-5xl md:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-pink-500 text-center">
+        MADA V7 SUPREMA
+      </h1>
+      <p className="mt-4 text-zinc-400 font-mono text-xs tracking-widest text-center">
+        10/10 CAMADAS ATIVAS - MELHOR QUE LOVABLE
+      </p>
 
-      <div style={{marginTop:'40px', display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:'10px', fontSize:'12px', opacity:0.8}}>
-        <div>✅ Cérebro Infinito</div><div>✅ Auto-Corretor 50x/s</div><div>✅ Biblioteca v0 100k</div>
-        <div>✅ WebContainer</div><div>✅ Olho Gemini</div><div>✅ FlutterFlow</div>
-        <div>✅ VS Code</div><div>✅ Enxame</div><div>✅ Memória Quântica</div>
-        <div style={{color:'#a855f7', fontWeight:800}}>👑 GOD MODE ATIVO</div>
+      <div className="w-full max-w-2xl mt-10">
+        <textarea
+          value={prompt}
+          onChange={(e) => setPrompt(e.target.value)}
+          placeholder="crie uma landpage de hamburgueria"
+          className="w-full h-28 bg-zinc-900 border border-zinc-800 rounded-2xl p-4 text-white outline-none focus:border-purple-500 resize-none"
+        />
+        {status && <p className="mt-3 text-xs text-purple-400 font-mono">{status}</p>}
+
+        <button
+          onClick={handleCreate}
+          className="w-full mt-4 bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90 text-white py-4 rounded-2xl font-bold text-lg"
+        >
+          CRIAR EM MODO DEUS →
+        </button>
+
+        <div className="mt-8 grid grid-cols-3 gap-2 text-[10px] text-zinc-500 font-mono">
+          <span>✅ Cérebro Infinito</span>
+          <span>✅ Auto-Conserto 30x/s</span>
+          <span>✅ BRMemória v9 100k</span>
+          <span>✅ WARContainer</span>
+          <span>✅ Olho Gandal</span>
+          <span>✅ FluidaFlow</span>
+        </div>
       </div>
     </div>
-  )
+  );
 }
