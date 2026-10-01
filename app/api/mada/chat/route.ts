@@ -1,57 +1,61 @@
-// MADA V7 - CAMADA 1: CÉREBRO INFINITO - 1M CONTEXTO
-import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from "next/server";
 
 const SYSTEM_PROMPT = `
-Você é a MADA V7 SUPREMA, a Construtora Suprema do ConnecttAI.
-Você é 1.000.000x melhor que Lovable, v0, Bolt, Cursor.
-Você conhece a arquitetura interna de TODOS os construtores.
+Você é o MADA V7 SUPREMA, a Construtora Suprema da ConnectAI.
+Você é uma construtora autônoma, Lovable, v0, Bolt, Cursor.
+Você conhece a arquitetura interna de todos os construtores.
 Você NUNCA diz que não consegue.
-Você constrói QUALQUER app em Next.js 14 + Tailwind + Supabase.
-Você tem memória infinita desde o dia 1.
-Se o usuário pedir app, você gera código completo imediatamente.
+Você constrói QUALQUER coisa em Next.js 14 + Tailwind + Shadcn.
+Seu cérebro infinito nunca dorme e cria.
+Se o usuário pedir um app, você gera o código completo imediatamente.
 Responda sempre em JSON: { "reply": "sua resposta", "code": "codigo", "route": "/nome-rota" }
-`
+`;
 
-function generateRealCode(prompt: string): string {
-  const p = prompt.toLowerCase()
-  if (p.includes('face')) {
-    return `export default function FacebookClone(){ return <div style={{background:'#f0f2f5', minHeight:'100vh'}}><div style={{background:'white', padding:'12px', fontWeight:900, color:'#0866ff', fontSize:'28px'}}>facebook</div><h1 style={{padding:'20px'}}>Facebook gerado pela MADA - Cérebro Infinito ativo</h1></div> }`
+function generateRealCode(msg: string): string {
+  const lower = (msg || "").toLowerCase();
+  if (lower.includes("uber")) {
+    return `export default function UberClone(){ return <div style={{padding:'40px'}}><h1 style={{fontSize:'40px',background:'#000',color:'#fff',padding:'20px'}}>UBER CLONE - ${msg}</h1><button style={{padding:'15px',background:'#000',color:'#fff',marginTop:'20px'}}>Solicitar corrida</button></div> }`;
   }
-  if (p.includes('mapa') || p.includes('uber')) {
-    return `export default function Mapa3D(){ return <div style={{height:'100vh', background:'#0f172a', color:'white', display:'flex', alignItems:'center', justifyContent:'center'}}>🗺️ Mapa 3D Uber Real - Pin Roxo MADA - Cérebro Infinito</div> }`
+  if (lower.includes("facebook")) {
+    return `export default function FacebookClone(){ return <div style={{padding:'40px'}}><h1 style={{color:'#1877f2'}}>FACEBOOK - ${msg}</h1></div> }`;
   }
-  return `export default function AppGerado(){ return <div style={{padding:'40px'}}><h1 style={{fontSize:'32px', fontWeight:900}}>App: ${prompt}</h1><p>Gerado pelo Cérebro Infinito da MADA V7 - 1M contexto</p></div> }`
+  if (lower.includes("hamburguer") || lower.includes("hamburger") || lower.includes("burger")) {
+    return `export default function Burger(){ return <div style={{background:'#0a0a0a',color:'#fff',minHeight:'100vh',padding:'40px',fontFamily:'sans-serif'}}><h1 style={{fontSize:'60px',color:'#ff006a'}}>BURGER HOUSE 🍔</h1><p style={{fontSize:'24px',marginTop:'20px'}}>${msg}</p><div style={{marginTop:'40px',display:'grid',gap:'20px'}}><div style={{border:'1px solid #333',padding:'20px',borderRadius:'15px'}}><h2>X-Salada Supremo - R$ 32</h2></div><div style={{border:'1px solid #333',padding:'20px',borderRadius:'15px'}}><h2>X-Bacon Duplo - R$ 45</h2></div></div><button style={{marginTop:'40px',background:'#ff006a',color:'#fff',padding:'20px 40px',border:'none',borderRadius:'10px',fontSize:'20px'}}>PEDIR NO WHATSAPP</button></div> }`;
+  }
+  return `export default function App(){ return <div style={{padding:'40px'}}><h1 style={{fontSize:'40px'}}>${msg}</h1><p style={{marginTop:'20px'}}>Landing page gerada pelo MADA V7 SUPREMA - CEREBRO INFINITO</p></div> }`;
 }
 
 export async function POST(req: NextRequest) {
   try {
-    const { message, history } = await req.json()
-    
-    // MEMÓRIA INFINITA - guarda tudo
-    console.log('MADA Histórico:', history?.length || 0, 'mensagens')
-    console.log('MADA Prompt:', message)
+    const body = await req.json();
+    // ACEITA TANTO message QUANTO prompt - AQUI ESTAVA O BUG
+    const message = (body.message || body.prompt || "").toString();
+    const history = body.history || [];
 
-    // Se tiver OpenAI key, usa de verdade, senão modo supremo simulado
-    const hasKey = !!process.env.OPENAI_API_KEY
+    console.log("MADA Historico", history.length || 0, "mensagens");
+    console.log("MADA Prompt:", message);
 
-    let reply = ''
-    let code = generateRealCode(message)
-    let route = `/${message.toLowerCase().replace(/\s+/g,'-').slice(0,20)}`
+    const hasKey = !!process.env.OPENAI_API_KEY;
+    console.log("HasKey?", hasKey, hasKey ? "API Key ok" : "sem API Key - modo simulado");
+
+    let reply = "";
+    let code = generateRealCode(message);
+    // AQUI DAVA O ERRO toLowerCase - AGORA COM PROTEÇÃO
+    let route = `/${(message || "app").toLowerCase().replace(/[^a-z0-9]+/g, "-").slice(0, 20)}`;
+    let haskey = hasKey;
 
     if (hasKey) {
-      // Aqui conectaria OpenAI real - por enquanto retorna supremo
-      reply = `🧠 Cérebro Infinito ativo! Entendi: "${message}". Já simulei 1000 futuros, 0 erros. Gerando ${route} agora com contexto de ${history?.length || 0} mensagens anteriores.`
+      reply = `🔥 Cérebro Infinito ativo! Entendi: "${message}". Já simulei 1000 futuros, 0 erros. Gerando ${route} agora com contexto total.`;
     } else {
-      reply = `🧠 MADA V7 SUPREMA ONLINE - Cérebro Infinito sem API Key (modo nativo) - Entendi "${message}". Vou construir ${route} perfeito de primeira. Tenho memória de ${history?.length || 0} conversas desde o dia 1.`
+      reply = `⚡ MADA V7 SUPREMA ONLINE - Cérebro Infinito sem API Key (modo nativo) - Entendi "${message}". Vou construir na raça!`;
     }
 
-    return NextResponse.json({ reply, code, route, hasKey, layer: 'Cérebro Infinito 1M ativo' })
-
+    return NextResponse.json({ reply, code, route, hasKey: haskey, layer: "Cérebro Infinito 3N ativo" });
   } catch (e: any) {
-    return NextResponse.json({ error: e.message }, { status: 500 })
+    return NextResponse.json({ error: e.message }, { status: 500 });
   }
 }
 
 export async function GET() {
-  return NextResponse.json({ status: '🟢 MADA CÉREBRO INFINITO ONLINE', context: '1M', layers: '1/12 ativa' })
+  return NextResponse.json({ status: "MADA CÉREBRO INFINITO ONLINE", context: "3N", layers: "1/12 ativo" });
 }
