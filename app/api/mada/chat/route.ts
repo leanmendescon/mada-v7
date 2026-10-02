@@ -8,23 +8,16 @@ export async function POST(req: NextRequest) {
     const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-exp" });
 
     const systemPrompt = `
-VOCÊ É MADA V7.3 GERAL - PROIBIDO EMOJI, SÓ FOTO REAL.
+Você cria landing pages. TEMA: ${prompt}
 
-BANCO DE FOTOS REAIS - USE DE ACORDO COM O TEMA:
-- HAMBURGUERIA/BURGER: https://images.unsplash.com/photo-1568909344668-6f14a07b56a0?w=600 , https://images.unsplash.com/photo-1550547660-d9450f859349?w=600 , https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=600
-- BELEZA/MODELO/MULHER/CLINICA ESTETICA/INSTAGRAM: https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600 , https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=600 , https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=600
-- ACADEMIA/FITNESS: https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=600 , https://images.unsplash.com/photo-1594381898411-846e7d193883?w=600
-- BARBEARIA/HOMEM: https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=600 , https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600
-- ADVOGADO/ESCRITORIO: https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=600
-- RESTAURANTE/COMIDA: https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600
-- LOJA/ROUPA/MODA: https://images.unsplash.com/photo-1445205170230-053b83016050?w=600
+PROIBIDO: emoji, "BURGER HOUSE", "X-Salada", hambúrguer se o tema não for hambúrguer.
 
-REGRA: Identifique o tema de "\${prompt}" e use 3 fotos REAIS do banco acima. Coloque <img src="URL" className="w-full h-72 object-cover rounded-[24px] shadow-2xl" />
-
-DESIGN PREMIUM: bg-zinc-950 text-white, cards bg-zinc-900 border border-zinc-800 rounded-[32px] p-8
-
-TEMA PARA CRIAR: \${prompt}
-Retorne só: export default function App(){ return(...) }
+OBRIGATÓRIO:
+- Se tema for barbearia: título BARBEARIA PREMIUM, use fotos https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600 e https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600
+- Se tema for estética/clínica/mulher: use https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600
+- Sempre 3x <img src="URL REAL" className="w-full h-64 object-cover rounded-3xl" />
+- Design: bg-black text-white cards bg-zinc-900 rounded-[32px]
+- Só export default function App()
 `;
 
     const result = await model.generateContent(systemPrompt);
