@@ -4,40 +4,32 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 export async function POST(req: NextRequest) {
   try {
     const { prompt } = await req.json();
-    const finalPrompt = prompt || "landing page premium";
-
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
     const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-exp" });
 
     const systemPrompt = `
-VOCÊ É MADA V7 DEFINITIVA - NUNCA USE EMOJI.
+VOCÊ É MADA V7.3 GERAL - PROIBIDO EMOJI, SÓ FOTO REAL.
 
-REGRAS ABSOLUTAS:
+BANCO DE FOTOS REAIS - USE DE ACORDO COM O TEMA:
+- HAMBURGUERIA/BURGER: https://images.unsplash.com/photo-1568909344668-6f14a07b56a0?w=600 , https://images.unsplash.com/photo-1550547660-d9450f859349?w=600 , https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=600
+- BELEZA/MODELO/MULHER/CLINICA ESTETICA/INSTAGRAM: https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600 , https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=600 , https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=600
+- ACADEMIA/FITNESS: https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=600 , https://images.unsplash.com/photo-1594381898411-846e7d193883?w=600
+- BARBEARIA/HOMEM: https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=600 , https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600
+- ADVOGADO/ESCRITORIO: https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=600
+- RESTAURANTE/COMIDA: https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600
+- LOJA/ROUPA/MODA: https://images.unsplash.com/photo-1445205170230-053b83016050?w=600
 
-1. PROIBIDO EMOJI: Nunca use 🍔 😍 🔥 etc. Use SVG.
+REGRA: Identifique o tema de "\${prompt}" e use 3 fotos REAIS do banco acima. Coloque <img src="URL" className="w-full h-72 object-cover rounded-[24px] shadow-2xl" />
 
-2. FOTOS REAIS OBRIGATÓRIAS - USE SEMPRE:
-   - Comida/hamburgueria: <img src="https://source.unsplash.com/800x600/?hamburger,cheeseburger" />
-   - Modelo mulher bonita / estética / moda / insta: <img src="https://source.unsplash.com/800x600/?beautiful,woman,model,face" />
-   - Modelo homem: <img src="https://source.unsplash.com/800x600/?handsome,man,model" />
-   - Clínica/beleza: <img src="https://source.unsplash.com/800x600/?beautiful,woman,spa,clinic" />
-   - Academia: <img src="https://source.unsplash.com/800x600/?fitness,woman,gym" />
-   - App/Celular/Instagram: <img src="https://source.unsplash.com/800x600/?iphone,mockup,instagram,girl" />
-   - Negócio genérico: <img src="https://source.unsplash.com/800x600/?business,${finalPrompt}" />
+DESIGN PREMIUM: bg-zinc-950 text-white, cards bg-zinc-900 border border-zinc-800 rounded-[32px] p-8
 
-3. DESIGN: bg-zinc-950 text-white, cards bg-zinc-900 border-zinc-800 rounded-[32px] p-8, botão bg-[#ff0055] rounded-full font-black
-
-4. SEMPRE 3 fotos reais diferentes na página
-
-5. CÓDIGO: apenas export default function App(){ return(...) } com Tailwind
-
-CRIE COM FOTOS REAIS DE MODELOS LINDAS SE PRECISAR, SEM EMOJI: ${finalPrompt}
+TEMA PARA CRIAR: \${prompt}
+Retorne só: export default function App(){ return(...) }
 `;
 
     const result = await model.generateContent(systemPrompt);
-    let code = result.response.text().replace(/```jsx|```tsx|```javascript|```js|```/g, "").trim();
-
-    return NextResponse.json({ code, real: true });
+    let code = result.response.text().replace(/```[a-z]*|```/g, "").trim();
+    return NextResponse.json({ code });
   } catch (e: any) {
     return NextResponse.json({ error: e.message }, { status: 500 });
   }
