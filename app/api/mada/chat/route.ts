@@ -1,50 +1,19 @@
-import { NextRequest, NextResponse } from "next/server";
-import OpenAI from "openai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
-export async function POST(req: NextRequest) {
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
+
+export async function POST(req: Request) {
   try {
-    const { prompt } = await req.json();
+    const { messages } = await req.json();
+    const prompt = messages[messages.length - 1]?.content || messages[messages.length - 1]?.parts?.[0]?.text || "";
 
-    if (!process.env.OPENAI_API_KEY) {
-      // Sem chave ainda, retorna mock bonito
-      return NextResponse.json({
-        code: `export default function App() { return <div className="min-h-screen bg-black text-white p-10"><h1 className="text-5xl font-black">${prompt}</h1><p className="mt-4 opacity-60">Adicione OPENAI_API_KEY na Vercel pra gerar de verdade</p></div> }`,
-        fake: true
-      });
-    }
+    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-exp" });
+    const result = await model.generateContent(prompt);
 
-    const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages: [
-        {
-          role: "system",
-          content: `Você é o MADA V7 SUPREMA, melhor que Lovable. Gere UMA landing page completa em React + Tailwind.
-
-REGRAS:
-- Retorne SÓ código React, sem explicação.
-- Use export default function App() { return (...) }
-- Design PREMIUM, dark mode, moderno, gradientes rosa/roxo #ff0055, bordas arredondadas 24px
-- Se for hamburgueria, crie preços R$ 32, R$ 45, etc.
-- Código tem que funcionar direto.
-- Sem import desnecessário.
-`
-        },
-        { role: "user", content: `Crie: ${prompt}` }
-      ],
-      temperature: 0.9,
-      max_tokens: 4000,
+    return new Response(result.response.text(), {
+      headers: { "Content-Type": "text/plain" },
     });
-
-    const code = completion.choices[0].message.content || "";
-
-    // Limpa markdown ```jsx
-    const clean = code.replace(/```jsx|```tsx|```js|```/g, "").trim();
-
-    return NextResponse.json({ code: clean, real: true });
-
   } catch (e: any) {
-    return NextResponse.json({ code: `<div>Erro IA: ${e.message}</div>`, error: e.message }, { status: 500 });
+    return new Response("Erro: " + e.message, { status: 500 });
   }
 }
