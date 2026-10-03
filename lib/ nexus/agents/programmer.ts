@@ -1,13 +1,16 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { GoogleGenerativeAI } from '@google/generative-ai';
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
-
-export async function runProgrammer(prompt: string, plan?: string) {
+export async function runProgrammer(prompt: string, architecture: any) {
+  const apiKey = process.env.GOOGLE_API_KEY || process.env.GEMINI_API_KEY || '';
+  if (!apiKey) {
+    return `<div><h1>${prompt}</h1><p>Sem API Key</p></div>`;
+  }
+  const genAI = new GoogleGenerativeAI(apiKey);
   const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
   const fullPrompt = `
     Você é o Programador do MADA V7. Gere APENAS HTML completo (com <style> inline).
     Projeto: ${prompt}
-    Plano: ${plan || 'Crie um site moderno'}
+    Plano: ${JSON.stringify(architecture) || 'crie um site moderno'}
     Retorne APENAS o HTML, sem markdown.
   `;
   const result = await model.generateContent(fullPrompt);
