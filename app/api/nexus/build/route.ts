@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { runNexus } from '@/lib/nexus/runner'
+import { runNexus } from '../../../../lib/nexus/runner'
 
 export async function POST(req: NextRequest) {
   try {
