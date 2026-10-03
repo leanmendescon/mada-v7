@@ -1,12 +1,20 @@
 import { GoogleGenerativeAI } from '@google/generative-ai'
 
-const genAI = new GoogleGenerativeAI(
-  process.env.GOOGLE_API_KEY || 
-  process.env.GEMINI_API_KEY || 
-  ''
-)
-
 export async function runResearcher(prompt: string) {
+  const apiKey = process.env.GOOGLE_API_KEY || process.env.GEMINI_API_KEY || ''
+  
+  if (!apiKey) {
+    return {
+      intent: prompt,
+      stack: ['nextjs', 'react', 'tailwind'],
+      features: ['landing page'],
+      complexity: 'medium',
+      fallback: true,
+      reason: 'no api key'
+    }
+  }
+
+  const genAI = new GoogleGenerativeAI(apiKey)
   const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' })
   
   const systemPrompt = `Você é o RESEARCHER do NEXUS V8.
