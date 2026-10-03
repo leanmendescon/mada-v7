@@ -1,38 +1,33 @@
 export async function runProgrammer(prompt: string, architecture: any) {
-  // FASE 4 - COM FOTO REAL UNSPLASH - SEM EMOJI
   return `<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script src="https://cdn.tailwindcss.com"></script>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@800;900&display=swap" rel="stylesheet">
-<style>body{font-family:'Outfit',sans-serif;margin:0}</style>
 </head>
-<body class="bg-[#0a0a0a] text-white overflow-x-hidden">
-  <section class="min-h-[80vh] flex flex-col justify-center px-8 md:px-20 relative">
-    <img src="https://images.unsplash.com/photo-1568909347948-ff07a07b56a0?w=1200&auto=format&fit=crop&q=80" class="absolute inset-0 w-full h-full object-cover opacity-50" />
-    <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
-    <div class="relative z-10">
-      <span class="bg-yellow-400 text-black px-4 py-1 rounded-full text-sm font-black">MADA V7 • NEXUS</span>
-      <h1 class="text-7xl md:text-8xl font-black leading-[0.85] mt-6">BURGER<br><span class="text-yellow-400">HOUSE</span></h1>
-      <p class="text-xl mt-6 max-w-xl text-gray-200">Prompt: ${prompt} — A melhor hamburgueria artesanal. Blend 180g, pão brioche e muito sabor.</p>
-      <button class="mt-8 bg-yellow-400 text-black px-10 py-4 rounded-full font-black text-lg hover:scale-105 transition">PEDIR NO WHATSAPP →</button>
+<body style="margin:0;background:#0a0a0a;color:white;font-family:sans-serif">
+<section style="min-height:100vh;position:relative;display:flex;align-items:center;padding:40px;background:#0a0a0a">
+  <img src="https://images.unsplash.com/photo-1568909347948-ff07a07b56a0?w=1200&q=80&auto=format&fit=crop" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.5" />
+  <div style="position:relative;z-index:10">
+    <h1 style="font-size:80px;font-weight:900;line-height:0.9">BURGER<br><span style="color:#facc15">HOUSE</span></h1>
+    <p style="margin-top:20px;max-width:500px;font-size:18px;color:#e5e5e5">${prompt} - Blend 180g, pão brioche artesanal.</p>
+    <button style="margin-top:24px;background:#facc15;color:black;padding:16px 32px;border-radius:999px;font-weight:900;border:0">PEDIR NO WHATSAPP →</button>
+  </div>
+</section>
+<section style="background:white;color:black;padding:60px 40px;border-radius:40px 40px 0 0;margin-top:-40px;position:relative;z-index:20">
+  <h2 style="font-size:48px;font-weight:900">CARDÁPIO.</h2>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:30px">
+    <div style="background:#fafafa;padding:20px;border-radius:24px;display:flex;gap:16px">
+      <img src="https://images.unsplash.com/photo-1550547660-d9450f859349?w=300&q=80&auto=format&fit=crop" style="width:110px;height:110px;border-radius:16px;object-fit:cover" />
+      <div><b>X-Salada Supremo</b><br><span style="color:gray">Blend 180g, cheddar</span><br><b style="font-size:22px">R$ 32</b></div>
     </div>
-  </section>
-  <section class="px-8 md:px-20 py-16 bg-white text-black rounded-t-[40px] -mt-10 relative z-20 min-h-[50vh]">
-    <h2 class="text-5xl font-black">CARDÁPIO.</h2>
-    <div class="grid md:grid-cols-2 gap-6 mt-10">
-      <div class="flex gap-5 bg-zinc-50 p-6 rounded-3xl border">
-        <img src="https://images.unsplash.com/photo-1550547660-d9450f859349?w=400&auto=format&fit=crop&q=80" class="w-28 h-28 rounded-2xl object-cover"/>
-        <div><h3 class="font-black text-xl">X-Salada Supremo</h3><p class="text-zinc-500 text-sm">Pão brioche, blend 180g, cheddar</p><p class="font-black text-2xl mt-2">R$ 32</p></div>
-      </div>
-      <div class="flex gap-5 bg-zinc-50 p-6 rounded-3xl border">
-        <img src="https://images.unsplash.com/photo-1561070791-2526d30994b5?w=400&auto=format&fit=crop&q=80" class="w-28 h-28 rounded-2xl object-cover"/>
-        <div><h3 class="font-black text-xl">X-Bacon Duplo</h3><p class="text-zinc-500 text-sm">2x blend 180g, bacon, cheddar duplo</p><p class="font-black text-2xl mt-2">R$ 45</p></div>
-      </div>
+    <div style="background:#fafafa;padding:20px;border-radius:24px;display:flex;gap:16px">
+      <img src="https://images.unsplash.com/photo-1561070791-2526d30994b5?w=300&q=80&auto=format&fit=crop" style="width:110px;height:110px;border-radius:16px;object-fit:cover" />
+      <div><b>X-Bacon Duplo</b><br><span style="color:gray">Duplo blend + bacon</span><br><b style="font-size:22px">R$ 45</b></div>
     </div>
-  </section>
+  </div>
+</section>
 </body>
 </html>`;
 }
