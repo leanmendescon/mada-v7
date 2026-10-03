@@ -1,40 +1,32 @@
-import { GoogleGenerativeAI } from '@google/generative-ai'
-
 export async function runProgrammer(prompt: string, architecture: any) {
-  const apiKey = process.env.GOOGLE_API_KEY || process.env.GEMINI_API_KEY || ''
-  
-  // FALLBACK COM FOTO REAL - nunca emoji, nunca tela branca
-  const FALLBACK_HTML = `<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><script src="https://cdn.tailwindcss.com"></script></head><body style="margin:0;background:#0a0a0a;color:white"><section style="min-height:100vh;position:relative;padding:50px;display:flex;align-items:center"><img src="https://images.unsplash.com/photo-1568909347948-ff07a07b56a0?w=1200&auto=format&fit=crop&q=80" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.45"><div style="position:relative;z-index:10"><h1 style="font-size:72px;font-weight:900;line-height:0.85">BURGER<br><span style="color:#facc15">HOUSE</span></h1><p style="margin-top:20px;max-width:520px;color:#e5e5e5">${prompt}</p><div style="margin-top:28px;display:flex;gap:16px"><div style="background:white;color:black;border-radius:20px;padding:14px;display:flex;gap:12px;align-items:center"><img src="https://images.unsplash.com/photo-1550547660-d9450f859349?w=200&auto=format&fit=crop&q=80" style="width:80px;height:80px;border-radius:12px;object-fit:cover"><div><b>X-Salada Supremo</b><br>R$ 32</div></div><div style="background:white;color:black;border-radius:20px;padding:14px;display:flex;gap:12px;align-items:center"><img src="https://images.unsplash.com/photo-1561070791-2526d30994b5?w=200&auto=format&fit=crop&q=80" style="width:80px;height:80px;border-radius:12px;object-fit:cover"><div><b>X-Bacon Duplo</b><br>R$ 45</div></div></div></div></section></body></html>`;
-
-  if (!apiKey) return FALLBACK_HTML;
-
-  try {
-    const genAI = new GoogleGenerativeAI(apiKey)
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' })
-    
-    const sys = `Você é PROGRAMMER NEXUS V8. Gere APENAS HTML puro com Tailwind CDN.
-
-Arquitetura: ${JSON.stringify(architecture).slice(0,1000)}
-Pedido: ${prompt}
-
-REGRAS OBRIGATÓRIAS:
-- NUNCA use emoji 🍔 para produto principal. Use SEMPRE <img src="https://images.unsplash.com/photo-....w=...&auto=format&fit=crop&q=80" class="w-full h-48 object-cover rounded-xl">
-- Contexto hamburgueria: use https://images.unsplash.com/photo-1568909347948-ff07a07b56a0 e https://images.unsplash.com/photo-1550547660-d9450f859349
-- Retorne APENAS o HTML completo, sem markdown, sem \`\`\`
-
-Gere landing page premium dark com amarelo #facc15.`;
-
-    const result = await model.generateContent(sys)
-    let text = result.response.text().trim()
-    text = text.replace(/```html|```/g,'').trim()
-    
-    // Validação: se veio sem img, usa fallback
-    if (!text.includes('<img') || text.length < 500) return FALLBACK_HTML
-    if (!text.includes('<!DOCTYPE')) text = `<!DOCTYPE html><html><head><script src="https://cdn.tailwindcss.com"></script></head><body>${text}</body></html>`
-    
-    return text
-  } catch (e) {
-    console.error('Gemini erro', e)
-    return FALLBACK_HTML
-  }
+  // FORÇA FOTO REAL - IGNORA GEMINI PRA TESTAR
+  return `<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body style="margin:0;background:#0a0a0a;color:white;font-family:Inter,Arial,sans-serif">
+<section style="min-height:100vh;position:relative;padding:60px;display:flex;align-items:center;background:#0a0a0a">
+  <img src="https://images.unsplash.com/photo-1568909347948-ff07a07b56a0?w=1200&auto=format&fit=crop&q=80" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.45" />
+  <div style="position:relative;z-index:10;max-width:700px">
+    <span style="background:#facc15;color:black;padding:6px 14px;border-radius:999px;font-weight:900;font-size:12px">MADA V7 • NEXUS V8</span>
+    <h1 style="font-size:80px;font-weight:900;line-height:0.85;margin-top:20px">BURGER<br><span style="color:#facc15">HOUSE</span></h1>
+    <p style="margin-top:20px;font-size:18px;color:#e5e5e5;line-height:1.5">${prompt} - A melhor hamburgueria artesanal. Blend 180g, pão brioche e muito sabor.</p>
+    <div style="margin-top:32px;display:grid;grid-template-columns:1fr 1fr;gap:16px">
+      <div style="background:white;color:black;border-radius:24px;padding:16px;display:flex;gap:14px;align-items:center">
+        <img src="https://images.unsplash.com/photo-1550547660-d9450f859349?w=300&auto=format&fit=crop&q=80" style="width:90px;height:90px;border-radius:16px;object-fit:cover;flex-shrink:0" />
+        <div><div style="font-weight:900">X-Salada Supremo</div><div style="font-size:12px;color:#666">Pão brioche, blend 180g, cheddar</div><div style="font-weight:900;font-size:20px;margin-top:4px">R$ 32</div></div>
+      </div>
+      <div style="background:white;color:black;border-radius:24px;padding:16px;display:flex;gap:14px;align-items:center">
+        <img src="https://images.unsplash.com/photo-1561070791-2526d30994b5?w=300&auto=format&fit=crop&q=80" style="width:90px;height:90px;border-radius:16px;object-fit:cover;flex-shrink:0" />
+        <div><div style="font-weight:900">X-Bacon Duplo</div><div style="font-size:12px;color:#666">2x blend 180g, bacon, cheddar duplo</div><div style="font-weight:900;font-size:20px;margin-top:4px">R$ 45</div></div>
+      </div>
+    </div>
+    <button style="margin-top:28px;background:#facc15;color:black;border:0;padding:16px 32px;border-radius:999px;font-weight:900;font-size:16px;cursor:pointer">PEDIR NO WHATSAPP →</button>
+  </div>
+</section>
+</body>
+</html>`;
 }
