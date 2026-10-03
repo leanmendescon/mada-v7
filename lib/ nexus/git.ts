@@ -1,10 +1,18 @@
-export async function createBranch(projectId: string) {
-  return `nexus/${projectId.slice(0,8)}`
+import fs from 'fs'
+import path from 'path'
+
+export async function saveFiles(projectId: string, files: Record<string, string>) {
+  const base = path.join(process.cwd(), 'generated', projectId)
+  if (!fs.existsSync(base)) fs.mkdirSync(base, { recursive: true })
+  
+  for (const [filePath, content] of Object.entries(files)) {
+    const full = path.join(base, filePath)
+    fs.mkdirSync(path.dirname(full), { recursive: true })
+    fs.writeFileSync(full, content)
+  }
+  return base
 }
-export async function commitAndPush(branch: string, message: string) {
-  console.log(`[GIT] ${branch}: ${message}`)
-  return { branch, pushed: true }
-}
-export async function getBranchName(projectId: string) {
-  return `nexus/${projectId.slice(0,8)}`
+
+export async function commitFiles() {
+  return true
 }
